@@ -1,21 +1,5 @@
-#include <stdio.h>
-#include <conio.h>
-#include <string.h>
-
-#define STR_LEN 100
-
-void addUser(char user_id[], char password[])
-{
-    FILE *fp = fopen("./user_info.csv", "a+");
-    if (fp == NULL)
-    {
-        printf("Unable to open file!\n");
-        return;
-    }
-    fprintf(fp, "%s, %s\n", user_id, password);
-    printf("New User Added Successfully :)\n");
-    fclose(fp);
-}
+#include "start.h"
+#include "user_utils.h"
 
 int main()
 {
@@ -37,21 +21,21 @@ int main()
             while (admin_login)
             {
                 printf("Admin Login Credentials:\n\n");
-                printf("Please Enter User ID for Admin:\n");
+                printf("Please Enter User ID for Admin: ");
                 char user_id[STR_LEN];
                 scanf("%s", user_id);
-                printf("Please Enter Password for Admin:\n");
+                printf("Please Enter Password for Admin: ");
                 char password[STR_LEN];
                 scanf("%s", password);
                 char admin_id[] = "admin";
                 char admin_password[] = "admin@123";
-                printf("%s %s", user_id, password);
-                printf("%d %d\n", strcmp(admin_password, password), strcmp(admin_id, user_id));
                 if (!strcmp(admin_password, password) && !strcmp(admin_id, user_id))
                 {
-                    printf("Welcome to admin Dashboard :)\n");
                     admin_login = 0;
                     getch();
+                    system("cls"); // clears the screen
+                    printf("Welcome to Admin Dashboard:\n\n");
+                    printUserInfo();
                 }
                 else
                     printf("You entered wrong Credentials. Check again!\n");
@@ -67,6 +51,7 @@ int main()
                 int registered;
                 printf("Already registered?\nPress 1 for Yes or 0 for No\n");
                 scanf("%d", &registered);
+                // already registered means user login
                 if (registered == 1)
                 {
                     int user_login = 1;
@@ -80,8 +65,9 @@ int main()
                         scanf("%s", password);
                         // need to read this from csv file using file handling
                         char original_id[] = "user", original_pwd[] = "user";
-                        if (!strcmp(original_id, user_id) && !strcmp(original_pwd, password))
+                        if (verifyUser(user_id, password))
                         {
+                            // verifyUser(user_id, password);
                             printf("User Logged in successfully :)\n");
                             getch();
                             user_login = 0;
@@ -89,6 +75,7 @@ int main()
                     }
                     user_reg = 0;
                 }
+                // not registered so register new user
                 else if (registered == 0)
                 {
                     int user_register = 1;
