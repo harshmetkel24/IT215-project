@@ -1,6 +1,11 @@
 #include "start.h"
 
-void addUser(char user_id[], char password[])
+struct User
+{
+    char user_id[STR_LEN], password[STR_LEN], contact_no[STR_LEN];
+};
+
+void addUser(struct User user)
 {
     FILE *fp = fopen("./user_info.csv", "a+");
     if (fp == NULL)
@@ -8,7 +13,7 @@ void addUser(char user_id[], char password[])
         printf("Unable to open user_info.csv.\n");
         return;
     }
-    fprintf(fp, "%s, %s\n", user_id, password);
+    fprintf(fp, "%s, %s, %s\n", user.user_id, user.password, user.contact_no);
     printf("New User Added Successfully :)\n");
     fclose(fp);
 }

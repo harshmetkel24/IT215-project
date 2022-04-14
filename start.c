@@ -85,6 +85,9 @@ int main()
                         printf("Please enter your User ID: ");
                         char user_id[STR_LEN];
                         scanf("%s", user_id);
+                        char contact_no[STR_LEN];
+                        printf("Please enter your Contact Number: ");
+                        scanf("%s", contact_no);
                         char password[STR_LEN];
                         printf("Please enter your Password: ");
                         scanf("%s", password);
@@ -93,7 +96,11 @@ int main()
                         scanf("%s", confirm_password);
                         if (!strcmp(confirm_password, password))
                         {
-                            addUser(user_id, password);
+                            struct User user;
+                            strcpy(user.user_id, user_id);
+                            strcpy(user.password, password);
+                            strcpy(user.contact_no, contact_no);
+                            addUser(user);
                             printf("User with User ID %s is registered successfully :)\n", user_id);
                             user_register = 0;
                             getch();
