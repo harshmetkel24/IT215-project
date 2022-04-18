@@ -4,6 +4,6 @@
 #include <string.h>
 #include <ctype.h> // library to user isspace function
 
-#define STR_LEN 100
+#define STR_LEN 1000
 #define false 0
 #define true 1
