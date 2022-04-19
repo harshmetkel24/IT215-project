@@ -51,7 +51,7 @@ int verifyUser(char user_id[], char password[])
         column = 0;
         ++row;
         if (row == 1)
-            continue;                           // avoid printing the name of column
+            continue;                           // avoid printing the names of column
         char *row_string = strtok(buffer, ","); // splitting around
         while (row_string)
         {
@@ -81,7 +81,6 @@ int verifyUser(char user_id[], char password[])
             }
             row_string = strtok(NULL, ",");
         }
-        printf("\n");
     }
     fclose(fp);
     printf("No user found with USER ID %s.\n", user_id);

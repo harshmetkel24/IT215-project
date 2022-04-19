@@ -1,3 +1,2 @@
-sender_name, receiver_name,receiver_no, receiver_address, courier_msg, attachment_type 
-isha, vraj, 233445464, big_bazar, hello, cake
-harsh, harsh2, 1234569874, rakhiyal, temp, courier
+courier_id,sender_name, sender_no, receiver_name,receiver_no, receiver_address, courier_msg, attachment_type, courier_status
+courrier_id, harsh, , harsh2, 7412589632, addreass@123, message, tfig, 1
