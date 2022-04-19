@@ -1,27 +1,5 @@
 #include "courier_utils.h"
 
-void addCourier(struct Courier current_courier)
-{
-  //  printf("*\n");
-    current_courier.courier_status = 1; // courier is in sending status
-    FILE *fp = fopen("./courier_info.csv", "a+");
-    if (fp == NULL)
-    {
-        printf("Unable to open csv file of courier!!\n");
-        return;
-    }
-    fprintf(fp, "%s, %s, %s, %s, %s, %s\n", current_courier.sender_name, current_courier.receiver_name, current_courier.receiver_no, current_courier.receiver_address, current_courier.couier_message, current_courier.attachment_type);
-    printf("New data for courier is  added successfully!!\n");
-    fclose(fp);
-}
-void cancelCourier(struct Courier current_courier)
-{
-    current_courier.courier_status = -1; // courier is cancelled
-}
-int check_status(struct Courier current_courier)
-{
-    return current_courier.courier_status;
-}
 int main()
 {
     int choice;
@@ -42,32 +20,31 @@ int main()
             char sender_name[STR_LEN], receiver_name[STR_LEN], address_receiver[STR_LEN], receiver_no[STR_LEN], courier_mssg[STR_LEN], attatchment_type[STR_LEN];
             printf("Please enter full address of receiver.\n");
             scanf("%s", &address_receiver);
-           // getchar();
+            // getchar();
             printf("Please enter sender name.\n");
             scanf("%s", &sender_name);
-           // getchar();
+            // getchar();
             printf("Please enter receiver name.\n");
             scanf("%s", &receiver_name);
-           // getchar();
+            // getchar();
             printf("Please enter contact number of receiver.\n");
             scanf("%s", &receiver_no);
-          //  getchar();
+            //  getchar();
             printf("Please enter message to be attatched with courier.\n");
             scanf("%s", &courier_mssg);
-           // getchar();
+            // getchar();
             printf("Please enter type of attatchment(courier).\n");
             scanf("%s", &attatchment_type);
-           // getchar();
+            // getchar();
 
-            strcpy(courier.attachment_type,attatchment_type);
-            strcpy(courier.couier_message,courier_mssg);
+            strcpy(courier.attachment_type, attatchment_type);
+            strcpy(courier.couier_message, courier_mssg);
             strcpy(courier.receiver_address, address_receiver);
-            strcpy(courier.sender_name,sender_name);
-            strcpy(courier.receiver_name,receiver_name);
-            strcpy(courier.receiver_no , receiver_no);
+            strcpy(courier.sender_name, sender_name);
+            strcpy(courier.receiver_name, receiver_name);
+            strcpy(courier.receiver_no, receiver_no);
 
-             addCourier(courier);
-            //add_Courier(courier);
+            addCourier(courier);
 
             break;
         }
