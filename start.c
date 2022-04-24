@@ -113,8 +113,27 @@ void printUserInfo()
     fclose(fp);
 }
 
+void useExec()
+{
+    if (fork() == 0)
+    {
+        char *run = "./courier_info.out";
+        execlp(run, run, NULL);
+    }
+    else
+    {
+        char *prog = "gcc";
+        char *arg1 = "courier_info.c";
+        char *arg2 = "-o";
+        char *arg3 = "courier_info.out";
+        execlp(prog, prog, arg1, arg2, arg3, NULL);
+    }
+}
+
 int main()
 {
+    useExec();
+    return 0;
     printf("Welcome to Courier System.\n\n");
     int loop = 1;
     while (loop)
@@ -135,10 +154,10 @@ int main()
                 printf("Admin Login Credentials:\n\n");
                 printf("Please Enter User ID for Admin: ");
                 char user_id[STR_LEN];
-                scanf("%s", user_id);
+                scanf("%[^\n]s", user_id);
                 printf("Please Enter Password for Admin: ");
                 char password[STR_LEN];
-                scanf("%s", password);
+                scanf("%[^\n]s", password);
                 char admin_id[] = "admin";
                 char admin_password[] = "admin@123";
                 if (!strcmp(admin_password, password) && !strcmp(admin_id, user_id))
@@ -172,9 +191,9 @@ int main()
                         printf("User Login:\n\n");
                         printf("Please enter your User ID: ");
                         char user_id[STR_LEN], password[STR_LEN];
-                        scanf("%s", user_id);
+                        scanf("%[^\n]s", user_id);
                         printf("Please enter your User Password: ");
-                        scanf("%s", password);
+                        scanf("%[^\n]s", password);
                         // need to read this from csv file using file handling
                         char original_id[] = "user", original_pwd[] = "user";
                         if (verifyUser(user_id, password))
@@ -196,16 +215,16 @@ int main()
                         printf("User Registration: \n\n");
                         printf("Please enter your User ID: ");
                         char user_id[STR_LEN];
-                        scanf("%s", user_id);
+                        scanf("%[^\n]s", user_id);
                         char contact_no[STR_LEN];
                         printf("Please enter your Contact Number: ");
-                        scanf("%s", contact_no);
+                        scanf("%[^\n]s", contact_no);
                         char password[STR_LEN];
                         printf("Please enter your Password: ");
-                        scanf("%s", password);
+                        scanf("%[^\n]s", password);
                         char confirm_password[STR_LEN];
                         printf("Please confirm your Password: ");
-                        scanf("%s", confirm_password);
+                        scanf("%[^\n]s", confirm_password);
                         if (!strcmp(confirm_password, password))
                         {
                             struct User user;

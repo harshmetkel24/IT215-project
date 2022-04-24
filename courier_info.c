@@ -1,5 +1,5 @@
 #include "courier_utils.h"
-
+int ct = 0;
 void addCourier(struct Courier current_courier)
 {
     FILE *fp = fopen("./courier_info.csv", "a+");
@@ -12,7 +12,72 @@ void addCourier(struct Courier current_courier)
     printf("New data for courier is  added successfully!!\n");
     fclose(fp);
 }
+void update_status(char id[], char new_status[])
+{
+    FILE *fin = fopen("./courier_info.csv", "r");
+    FILE *fout = fopen("./update_courier.csv", "w+");
+    if (fin == NULL)
+    {
+        printf("Unable to open csv file of courier!!\n");
+        return;
+    }
+    if (fout == NULL)
+    {
+        printf("Unable to open csv file of update courier!!\n");
+        return;
+    }
+    char buffer[STR_LEN];
+    int row = 0, column = 0;
+    int flag = false;
+    while (fgets(buffer, STR_LEN, fin))
+    {
+        column = 0;
+        char *row_string = strtok(buffer, ","); // splitting around ","
+        while (row_string)
+        {
+            ++column;
+            if (column == 1)
+            {
+                if (!strcmp(row_string, id))
+                {
+                    flag = true;
+                }
+            }
+            if (flag && column == 9)
+            {
+                row_string = new_status;
+                fprintf(fout, " %s\n", row_string); // imp for getting new line after update;
+            }
+            else if (column == 9)
+            {
+                fprintf(fout, "%s", row_string);
+            }
 
+            if (column != 9)
+                fprintf(fout, "%s,", row_string);
+            row_string = strtok(NULL, ",");
+        }
+    }
+    int ret = remove("./courier_info.csv");
+    if (ret == 0)
+    {
+        printf("File deleted successfully");
+    }
+    else
+    {
+        perror("Unable to delete the file");
+    }
+    int value = rename("update_courier.csv", "courier_info.csv");
+    if (!value)
+    {
+        printf("%s", "File name changed successfully");
+    }
+    else
+    {
+        perror("Error");
+    }
+    fclose(fin), fclose(fout);
+}
 void cancelCourier(struct Courier current_courier)
 {
     current_courier.courier_status = -1; // courier is cancelled
@@ -75,6 +140,7 @@ int main()
         printf("Enter 2 for cancelling current courier.\n");
         printf("Enter 3 for checking current status of courier.\n");
         struct Courier courier;
+
         courier.courier_status = 0;
         scanf("%d", &choice);
         switch (choice)
@@ -82,26 +148,36 @@ int main()
         case 1:
         {
             printf("Welcome again!!\n");
-            char courrier_id[STR_LEN] = "courrier_id", sender_name[STR_LEN], sender_no[STR_LEN], receiver_name[STR_LEN], address_receiver[STR_LEN], receiver_no[STR_LEN], courier_mssg[STR_LEN], attatchment_type[STR_LEN];
+            char courier_id[STR_LEN], sender_name[STR_LEN], sender_no[STR_LEN], receiver_name[STR_LEN], address_receiver[STR_LEN], receiver_no[STR_LEN], courier_mssg[STR_LEN], attatchment_type[STR_LEN];
+            getchar();
             printf("Please enter sender name.\n");
-            scanf("%s", &sender_name);
+            scanf("%[^\n]s", sender_name);
+            getchar();
             printf("Please enter contact number of sender.\n");
-            scanf("%s", &sender_no);
+            scanf("%[^\n]s", sender_no);
+            getchar();
             printf("Please enter receiver name.\n");
-            scanf("%s", &receiver_name);
+            scanf("%[^\n]s", receiver_name);
+            getchar();
             printf("Please enter contact number of receiver.\n");
-            scanf("%s", &receiver_no);
+            scanf("%[^\n]s", receiver_no);
+            getchar();
             printf("Please enter full address of receiver.\n");
-            scanf("%s", &address_receiver);
+            scanf("%[^\n]s", address_receiver);
+            getchar();
             printf("Please enter message to be attatched with courier.\n");
-            scanf("%s", &courier_mssg);
+            scanf("%[^\n]s", courier_mssg);
+            getchar();
             printf("Please enter type of attatchment(courier).\n");
-            scanf("%s", &attatchment_type);
-
+            scanf("%[^\n]s", attatchment_type);
+            getchar();
             // copying data into struct
-            strcpy(courier.courrier_id, courrier_id);
+            // to convert int into string;
+            sprintf(courier_id, "%d", ct);
+            ct++;
+            strcpy(courier.courrier_id, courier_id);
             strcpy(courier.sender_name, sender_name);
-            strcpy(courier.sender_name, sender_name);
+            strcpy(courier.sender_no, sender_no);
             strcpy(courier.receiver_name, receiver_name);
             strcpy(courier.receiver_no, receiver_no);
             strcpy(courier.receiver_address, address_receiver);
@@ -114,7 +190,11 @@ int main()
         }
         case 2:
         {
-            if (courier.courier_status == 1)
+            char id[STR_LEN], new_status[STR_LEN] = "-1";
+            printf("Enter courier id that you want to cancel : ");
+            scanf("%s", id);
+            update_status(id, new_status);
+            if (courier.courier_status == 0)
             {
                 cancelCourier(courier);
                 printf("Courier is cancelled successfully!!!\n");
