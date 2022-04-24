@@ -1,4 +1,5 @@
 #include "start.h"
+#include <pthread.h>
 
 struct Courier
 {
@@ -18,7 +19,8 @@ struct Courier
      * ********************/
 };
 
-void addCourier(struct Courier current_courier);
+void create_thread(struct Courier current_courier);
+void *addCourier(void *arg);
 void cancelCourier(struct Courier current_courier);
 int check_status(struct Courier current_courier);
 int find_courrier(char id[], int *status); // return true on SUCCESS else false

@@ -1,17 +1,7 @@
 #include "courier_utils.h"
+
 int ct = 0;
-void addCourier(struct Courier current_courier)
-{
-    FILE *fp = fopen("./courier_info.csv", "a+");
-    if (fp == NULL)
-    {
-        printf("Unable to open csv file of courier!!\n");
-        return;
-    }
-    fprintf(fp, "%s, %s, %s, %s, %s, %s, %s, %s, %d\n", current_courier.courrier_id, current_courier.sender_name, current_courier.sender_no, current_courier.receiver_name, current_courier.receiver_no, current_courier.receiver_address, current_courier.couier_message, current_courier.attachment_type, current_courier.courier_status);
-    printf("New data for courier is  added successfully!!\n");
-    fclose(fp);
-}
+
 void update_status(char id[], char new_status[])
 {
     FILE *fin = fopen("./courier_info.csv", "r");
@@ -129,6 +119,36 @@ int find_courrier(char id[], int *status)
     return false;
 }
 
+void *addCourier(void *arg)
+{
+    struct Courier *courrier = arg;
+    printf("Current thread id is %u.\n", (unsigned int)pthread_self());
+    FILE *fp = fopen("./courier_info.csv", "a+");
+    if (fp == NULL)
+    {
+        printf("Unable to open csv file of courier!!\n");
+        pthread_exit(0); // to terminate only the current thread
+    }
+    fprintf(fp, "%s, %s, %s, %s, %s, %s, %s, %s, %d\n", courrier->courrier_id, courrier->sender_name, courrier->sender_no, courrier->receiver_name, courrier->receiver_no, courrier->receiver_address, courrier->couier_message, courrier->attachment_type, courrier->courier_status);
+    fclose(fp);
+    printf("New data for courier is  added successfully!!\n");
+    printf("thread with tid %u exited\n", (unsigned int)pthread_self());
+    pthread_exit(0);
+}
+
+void create_thread(struct Courier courrier)
+{
+    pthread_t tid;
+    pthread_create(&tid, NULL, addCourier, (void *)&courrier);
+    sleep(5);                                 // sleep the process for 60 secs
+    update_status(courrier.courrier_id, "1"); // update the status
+    pthread_join(tid, NULL);
+    pthread_exit(0);
+    // we can send whether couurier is cancelled or not
+    // 1 for cancelling courrier
+    // 0 for successfull addition of courrier
+}
+
 int main()
 {
     int choice;
@@ -184,8 +204,7 @@ int main()
             strcpy(courier.couier_message, courier_mssg);
             strcpy(courier.attachment_type, attatchment_type);
             courier.courier_status = 0;
-            addCourier(courier);
-
+            create_thread(courier);
             break;
         }
         case 2:

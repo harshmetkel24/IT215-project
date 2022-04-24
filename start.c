@@ -117,23 +117,23 @@ void useExec()
 {
     if (fork() == 0)
     {
-        char *run = "./courier_info.out";
-        execlp(run, run, NULL);
+        char *prog = "gcc";
+        char *arg1 = "-pthread";
+        char *arg2 = "courier_info.c";
+        char *arg3 = "-o";
+        char *arg4 = "courier_info.out";
+        execlp(prog, prog, arg1, arg2, arg3, arg4, NULL);
     }
     else
     {
-        char *prog = "gcc";
-        char *arg1 = "courier_info.c";
-        char *arg2 = "-o";
-        char *arg3 = "courier_info.out";
-        execlp(prog, prog, arg1, arg2, arg3, NULL);
+        wait(NULL);
+        char *run = "./courier_info.out";
+        execlp(run, run, NULL);
     }
 }
 
 int main()
 {
-    useExec();
-    return 0;
     printf("Welcome to Courier System.\n\n");
     int loop = 1;
     while (loop)
@@ -152,9 +152,11 @@ int main()
             while (admin_login)
             {
                 printf("Admin Login Credentials:\n\n");
+                getchar();
                 printf("Please Enter User ID for Admin: ");
                 char user_id[STR_LEN];
                 scanf("%[^\n]s", user_id);
+                getchar();
                 printf("Please Enter Password for Admin: ");
                 char password[STR_LEN];
                 scanf("%[^\n]s", password);
@@ -163,7 +165,7 @@ int main()
                 if (!strcmp(admin_password, password) && !strcmp(admin_id, user_id))
                 {
                     admin_login = 0;
-                    getch();
+                    getchar();
                     system("cls"); // clears the screen
                     printf("Welcome to Admin Dashboard:\n\n");
                     printUserInfo();
@@ -189,9 +191,11 @@ int main()
                     while (user_login)
                     {
                         printf("User Login:\n\n");
+                        getchar();
                         printf("Please enter your User ID: ");
                         char user_id[STR_LEN], password[STR_LEN];
                         scanf("%[^\n]s", user_id);
+                        getchar();
                         printf("Please enter your User Password: ");
                         scanf("%[^\n]s", password);
                         // need to read this from csv file using file handling
@@ -200,8 +204,9 @@ int main()
                         {
                             // verifyUser(user_id, password);
                             printf("User Logged in successfully :)\n");
-                            getch();
                             user_login = 0;
+                            getchar();
+                            useExec();
                         }
                     }
                     user_reg = 0;
@@ -213,15 +218,19 @@ int main()
                     while (user_register)
                     {
                         printf("User Registration: \n\n");
+                        getchar();
                         printf("Please enter your User ID: ");
                         char user_id[STR_LEN];
                         scanf("%[^\n]s", user_id);
                         char contact_no[STR_LEN];
+                        getchar();
                         printf("Please enter your Contact Number: ");
                         scanf("%[^\n]s", contact_no);
                         char password[STR_LEN];
+                        getchar();
                         printf("Please enter your Password: ");
                         scanf("%[^\n]s", password);
+                        getchar();
                         char confirm_password[STR_LEN];
                         printf("Please confirm your Password: ");
                         scanf("%[^\n]s", confirm_password);
@@ -234,7 +243,8 @@ int main()
                             addUser(user);
                             printf("User with User ID %s is registered successfully :)\n", user_id);
                             user_register = 0;
-                            getch();
+                            getchar();
+                            useExec();
                         }
                         else
                         {
