@@ -1,4 +1,5 @@
-#include "courier_utils.h"
+#include "./include/courier_utils.h"
+#include <pthread.h>
 
 int ct = 0;
 
@@ -167,7 +168,8 @@ void create_thread(struct Courier courrier)
     // 0 for successfull addition of courrier
 }
 
-int main()
+// int main()
+void courier_info()
 {
     int choice;
 
@@ -264,5 +266,5 @@ int main()
         if (!c)
             break;
     }
-    return 0;
+    // return 0;
 }

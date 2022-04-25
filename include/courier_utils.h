@@ -19,6 +19,7 @@ struct Courier
      * ********************/
 };
 
+void courier_info();
 void create_thread(struct Courier current_courier);
 void *addCourier(void *arg);
 void cancelCourier(struct Courier current_courier);
