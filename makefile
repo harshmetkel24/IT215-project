@@ -4,7 +4,7 @@ CFLAGS=-I$(IDIR)
 ODIR=obj
 _DEPS=start.h user_utils.h courier_utils.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
-_OBJ=start.o
+_OBJ= start.o 
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 $(ODIR)/%.o: %.c $(DEPS)

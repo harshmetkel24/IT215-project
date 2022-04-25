@@ -1,4 +1,4 @@
-#include "start.h"
+#include "./include/start.h"
 #include "user_utils.h"
 
 void addUser(struct User user)
@@ -199,10 +199,8 @@ int main()
                         printf("Please enter your User Password: ");
                         scanf("%[^\n]s", password);
                         // need to read this from csv file using file handling
-                        char original_id[] = "user", original_pwd[] = "user";
                         if (verifyUser(user_id, password))
                         {
-                            // verifyUser(user_id, password);
                             printf("User Logged in successfully :)\n");
                             user_login = 0;
                             getchar();
