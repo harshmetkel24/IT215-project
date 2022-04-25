@@ -119,10 +119,21 @@ int find_courrier(char id[], int *status)
     return false;
 }
 
+void handleCancel(int sig)
+{
+    printf("Thread with tid %u received SIGINT signal.\n", (unsigned int)pthread_self());
+    if (cancel == true)
+    {
+        printf("Courrier sending on thread %u is cancelled.\n", (unsigned int)pthread_self());
+        pthread_exit(0);
+    }
+}
+
 void *addCourier(void *arg)
 {
     struct Courier *courrier = arg;
     printf("Current thread id is %u.\n", (unsigned int)pthread_self());
+    signal(SIGINT, handleCancel);
     FILE *fp = fopen("./courier_info.csv", "a+");
     if (fp == NULL)
     {
@@ -131,6 +142,15 @@ void *addCourier(void *arg)
     }
     fprintf(fp, "%s, %s, %s, %s, %s, %s, %s, %s, %d\n", courrier->courrier_id, courrier->sender_name, courrier->sender_no, courrier->receiver_name, courrier->receiver_no, courrier->receiver_address, courrier->couier_message, courrier->attachment_type, courrier->courier_status);
     fclose(fp);
+    sleep(10); // sleep the process for 60 secs
+    // after completion of delay we can't cancel
+    /**
+     * @note even amount of delay we need can be taken from user while sending courier
+     */
+    if (cancel == false)
+        update_status(courrier->courrier_id, "-1"); // update status to sent
+    else
+        update_status(courrier->courrier_id, "1"); // update status to cancelled
     printf("New data for courier is  added successfully!!\n");
     printf("thread with tid %u exited\n", (unsigned int)pthread_self());
     pthread_exit(0);
@@ -140,8 +160,6 @@ void create_thread(struct Courier courrier)
 {
     pthread_t tid;
     pthread_create(&tid, NULL, addCourier, (void *)&courrier);
-    sleep(5);                                 // sleep the process for 60 secs
-    update_status(courrier.courrier_id, "1"); // update the status
     pthread_join(tid, NULL);
     pthread_exit(0);
     // we can send whether couurier is cancelled or not

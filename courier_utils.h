@@ -24,3 +24,5 @@ void *addCourier(void *arg);
 void cancelCourier(struct Courier current_courier);
 int check_status(struct Courier current_courier);
 int find_courrier(char id[], int *status); // return true on SUCCESS else false
+void handleCancel(int sig);
+int cancel = true;
