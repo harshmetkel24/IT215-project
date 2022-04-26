@@ -68,7 +68,6 @@ int verifyUser(char user_id[], char password[])
             {
                 fclose(fp);
                 row_string = trim(row_string);
-                printf("%s", row_string);
                 if (!strcmp(row_string, password))
                 {
                     return true;
@@ -115,19 +114,44 @@ void printUserInfo()
 
 void useExec()
 {
-    if (fork() == 0)
+    int pid1 = fork();
+    if (pid1 == 0)
     {
         char *prog = "gcc";
-        char *arg1 = "-pthread";
-        char *arg2 = "courier_info.c";
-        char *arg3 = "-o";
-        char *arg4 = "courier_info.out";
-        execlp(prog, prog, arg1, arg2, arg3, arg4, NULL);
+        int pid2 = fork();
+        if (pid2 == 0)
+        {
+
+            int pid3 = fork();
+            if (pid3 == 0)
+            {
+                int pid4 = fork();
+                if (pid4 == 0)
+                {
+                    execlp(prog, prog, "-c", "courier_functions.c", "-o", "courier_functions.o", NULL);
+                }
+                else
+                {
+                    wait(NULL);
+                    execlp("ar", "ar", "rcs", "./lib/libcourier.a", "courier_functions.o", NULL);
+                }
+            }
+            else
+            {
+                wait(NULL);
+                execlp(prog, prog, "-c", "courier_info.c", "-o", "courier_info.o", NULL);
+            }
+        }
+        else
+        {
+            wait(NULL);
+            execlp(prog, prog, "-o", "courier_info", "courier_info.o", "-L./lib", "-lcourier", "-pthread", NULL);
+        }
     }
     else
     {
         wait(NULL);
-        char *run = "./courier_info.out";
+        char *run = "./courier_info";
         execlp(run, run, NULL);
     }
 }
