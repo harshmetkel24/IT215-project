@@ -100,14 +100,56 @@ void printUserInfo()
     {
         column = 0;
         ++row;
+        if (row == 1)
+        {
+            printf("user_id, contact_no\n\n");
+            continue;
+        }
         char *row_string = strtok(buffer, ","); // splitting around
         while (row_string)
         {
-            printf("%s\t", row_string);
+            if (column == 0)
+                printf("%s, ", row_string);
+            else if (column == 2)
+                printf("%s", row_string);
             row_string = strtok(NULL, ",");
             ++column;
         }
         printf("\n");
+    }
+    fclose(fp);
+}
+
+void printCourierInfo(char id[])
+{
+    FILE *fp = fopen("./courier_info.csv", "r");
+    if (fp == NULL)
+    {
+        printf("Unable to open csv file of courier!!\n");
+        return;
+    }
+    char buffer[STR_LEN];
+    int row = 0, column = 0;
+    int flag = false;
+    while (fgets(buffer, STR_LEN, fp))
+    {
+        column = 0;
+        ++row;
+        if (row == 1)
+        {
+            printf("Courier ID, Sender, Sender mob, Receiver, Receiver mob, Receiver Address,  Message,  Courrier Status\n\n");
+            continue;
+        }
+        char *row_string = strtok(buffer, ","); // splitting around
+        while (row_string)
+        {
+            ++column;
+            if (column != 9)
+                printf("%s, ", row_string);
+            else
+                printf("%s", row_string);
+            row_string = strtok(NULL, ",");
+        }
     }
     fclose(fp);
 }
@@ -158,12 +200,19 @@ void useExec()
 
 int main()
 {
-    printf("Welcome to Courier System.\n\n");
+    printf("**********************************************\n");
+    printf("*                                            *\n");
+    printf("*       Welcome to Courier System            *\n");
+    printf("*                                            *\n");
+    printf("**********************************************\n");
     int loop = 1;
     while (loop)
     {
+        printf("**********************************************\n");
         printf("Please select correct option from below:\n\n");
-        printf("1) Admin\n2) User\n");
+        printf("Enter 1 Admin\n2) User\n");
+        printf("**********************************************\n");
+
         // role = 1 => Admin login
         // role = 2 => User
         int role;

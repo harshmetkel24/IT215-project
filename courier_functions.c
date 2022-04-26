@@ -68,9 +68,7 @@ void update_status(char id[], char new_status[])
             }
             if (flag && column == 9)
             {
-                printf("%s\n", row_string);
                 strcpy(row_string, new_status);
-                printf("%s\n", row_string);
                 fprintf(fout, " %s\n", new_status); // imp for getting new line after update;
             }
             else if (column == 9)
@@ -99,9 +97,13 @@ void update_status(char id[], char new_status[])
 void cancelCourier(char id[])
 {
     int status;
-    find_courrier(id, &status);
+    int found = find_courrier(id, &status);
+    if (found == false)
+    {
+        printf("There is no Courier with ID %s.\n", id);
+        return;
+    }
     // if courier is still under process
-    printf("status is %d.\n", status);
     if (status == 0)
     {
         char newStatus[STR_LEN] = "2";
@@ -111,13 +113,15 @@ void cancelCourier(char id[])
     // courier sent
     else
     {
-        printf("Courier deliverd!\nCan't be cancelled.\n");
+        printf("Courier already deliverd!\nCannot be cancelled.\n");
     }
 }
 
 int check_status(struct Courier current_courier)
 {
-    return current_courier.courier_status;
+    int status;
+    find_courrier(current_courier.courrier_id, &status);
+    return status;
 }
 
 int find_courrier(char id[], int *status)
@@ -135,8 +139,6 @@ int find_courrier(char id[], int *status)
     {
         column = 0;
         ++row;
-        if (row == 1)
-            continue;                           // avoid printing the names of column
         char *row_string = strtok(buffer, ","); // splitting around
         while (row_string)
         {
@@ -158,7 +160,6 @@ int find_courrier(char id[], int *status)
         }
     }
     fclose(fp);
-    printf("No courrier with courrier ID %s found!\n", id);
     return false;
 }
 
@@ -179,14 +180,14 @@ void printCourierInfo(char id[])
         ++row;
         if (row == 1)
         {
-            printf("Courier ID\tSender\tSender mob\tReceiver\tReceiver mob\tReceiver Address\t\tMessage\t\tCourrier Status\n\n");
+            printf("Courier ID, Sender, Sender mob, Receiver, Receiver mob, Receiver Address,  Message,  Courrier Status\n\n");
             continue;
-        }                                       // avoid printing the names of column
+        }
         char *row_string = strtok(buffer, ","); // splitting around
         while (row_string)
         {
             ++column;
-            printf("%s \t", row_string);
+            printf("%s, ", row_string);
             row_string = strtok(NULL, ",");
         }
     }
@@ -196,7 +197,6 @@ void printCourierInfo(char id[])
 void *addCourier(void *arg)
 {
     struct Courier *courrier = arg;
-    printf("thread with id %u started.\n", (unsigned int)pthread_self());
     FILE *fp = fopen("./courier_info.csv", "a+");
     if (fp == NULL)
     {
@@ -205,19 +205,20 @@ void *addCourier(void *arg)
     }
     fprintf(fp, "%s, %s, %s, %s, %s, %s, %s, %s, %d\n", courrier->courrier_id, courrier->sender_name, courrier->sender_no, courrier->receiver_name, courrier->receiver_no, courrier->receiver_address, courrier->couier_message, courrier->attachment_type, courrier->courier_status);
     fclose(fp);
-    printf("Courier added successfully.\n\n");
+    printf("Courier created successfully.\n\n");
     if (fork() == 0)
     {
         printf("Your Courrier id is %s.\n\n", courrier->courrier_id);
-        printCourierInfo(courrier->courrier_id);
-        sleep(24);
-        update_status(courrier->courrier_id, "1"); // update status as sent
-        printf("thread with id %u end.\n", (unsigned int)pthread_self());
+        sleep(30);
+        int status;
+        find_courrier(courrier->courrier_id, &status);
+        if (status != 2)
+            update_status(courrier->courrier_id, "1"); // update status as sent
         pthread_exit(0);
     }
     else
     {
-        printf("\n\n\n");
+        printf("\n\n");
         execlp("./courier_info", "./courier_info", NULL);
     }
 }

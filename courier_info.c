@@ -6,15 +6,17 @@ int main()
 
     while (1)
     {
-        // add go to dashboard code
+        printf("**********************************************\n");
         printf("Enter 1 for adding new courier.\n");
         printf("Enter 2 for cancelling current courier.\n");
         printf("Enter 3 for checking current status of courier.\n");
         printf("Enter 4 for logging out.\n");
-        printf("Enter 5 for see list of all Courriers.\n");
+        printf("Enter 5 to see list all Couriers.\n");
+        printf("**********************************************\n\n");
         struct Courier courier;
 
         courier.courier_status = 0;
+        printf("Please enter your choice: ");
         scanf("%d", &choice);
         switch (choice)
         {
